@@ -104,12 +104,14 @@ export default {
       display: none;
     }
     .prefs {
-      box-sizing: border-box;
-      cursor: pointer;
       display: inline-block;
+      width: auto;
       padding: 5px 30px;
       position: relative;
-      width: auto;
+      box-sizing: border-box;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .prefs::before {
       background: #fff;
