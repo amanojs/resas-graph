@@ -17,7 +17,7 @@ export default {
   align-items: center;
   width: 100%;
   height: 60px;
-  padding: 0 60px;
+  padding: 0 4%;
   text-align: left;
   background-color: #16a085;
   margin-bottom: 20px;
