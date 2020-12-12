@@ -2,18 +2,21 @@
   <div id="app">
     <Header />
     <Form />
+    <Graph />
   </div>
 </template>
 
 <script>
 import Header from '@/components/Header'
 import Form from '@/components/Form'
+import Graph from '@/components/Graph'
 
 export default {
   name: 'App',
   components: {
     Header,
     Form,
+    Graph,
   },
 }
 </script>
