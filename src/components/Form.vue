@@ -37,23 +37,42 @@ export default {
       if (RESAS_KEY === 'undefind') {
         alert('システムに問題が発生しました')
         console.error('環境変数が読み込めません')
+        return
       }
-      const { data } = await axios
-        .get(process.env.VUE_APP_RESAS_END + '/api/v1/prefectures', {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-KEY': RESAS_KEY,
-          },
-        })
-        .catch(error => {
-          if (error.response) {
-            console.error(error.status + error.response.statusText)
+      try {
+        const { data } = await axios.get(
+          process.env.VUE_APP_RESAS_END + '/api/v1/prefectures',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-KEY': RESAS_KEY,
+            },
           }
-        })
-      const prefs = data.result
-      for (const pref of prefs) {
-        pref.checked = false
-        this.boxes = [...this.boxes, pref]
+        )
+        if (data.statusCode) {
+          throw new Error(data.statusCode)
+        }
+        const prefs = data.result
+        for (const pref of prefs) {
+          pref.checked = false
+          this.boxes = [...this.boxes, pref]
+        }
+      } catch (error) {
+        const status = Number(error.message)
+        let message = 'RESAS API: '
+        if (status === 400) {
+          message +=
+            '必須パラメータの設定が漏れていないか、正しいフォーマットで設定できているか、等をご確認ください'
+        } else if (status === 403) {
+          message += 'APIキーが無効です'
+        } else if (status === 404) {
+          message +=
+            'APIのアドレスに誤りはないか、バージョンアップで廃止されていないか、ご確認ください'
+        } else if (status === 429) {
+          message += 'アクセス制限数を超えました'
+        }
+        console.error(message)
+        return
       }
     },
   },
