@@ -7,13 +7,18 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     population: [],
+    popGraphData: [],
   },
   getters: {
     population: state => state.population,
+    popGraphData: state => state.popGraphData,
   },
   mutations: {
     setPopulation(state, population) {
       state.population = population
+    },
+    setPopGraphData(state, data) {
+      state.popGraphData = data
     },
   },
   actions: {
@@ -79,6 +84,34 @@ export default new Vuex.Store({
         prefsPopData.push(prefPopulation)
       }
       commit('setPopulation', prefsPopData)
+      // 都道府県ごとのグラフデータフォーマット
+      if (prefsPopData.length !== 0) {
+        const datasets = []
+        for (const prefData of prefsPopData) {
+          const datas = []
+          for (const data of prefData.population) {
+            datas.push(data.value)
+          }
+          datasets.push({
+            label: prefData.prefName,
+            fill: false,
+            borderColor: '#999',
+            data: datas,
+          })
+        }
+        // ラベル作成
+        const labels = []
+        for (const data of prefsPopData[0].population) {
+          labels.push(data.year)
+        }
+        const graphData = {
+          labels,
+          datasets,
+        }
+        commit('setPopGraphData', graphData)
+      } else {
+        commit('setPopGraphData', [])
+      }
     },
   },
 })
