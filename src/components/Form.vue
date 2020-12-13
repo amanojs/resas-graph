@@ -34,21 +34,19 @@ export default {
     },
     async getPrefs() {
       const RESAS_KEY = process.env.VUE_APP_RESAS_KEY
-      if (RESAS_KEY === 'undefind') {
+      const RESAS_END = process.env.VUE_APP_RESAS_END
+      if (!RESAS_KEY || !RESAS_END) {
         alert('システムに問題が発生しました')
-        console.error('環境変数が読み込めません')
+        console.error('RESASに関する環境変数が読み込めません')
         return
       }
       try {
-        const { data } = await axios.get(
-          process.env.VUE_APP_RESAS_END + '/api/v1/prefectures',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'X-API-KEY': RESAS_KEY,
-            },
-          }
-        )
+        const { data } = await axios.get(RESAS_END + '/api/v1/prefectures', {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': RESAS_KEY,
+          },
+        })
         if (data.statusCode) {
           throw new Error(data.statusCode)
         }
