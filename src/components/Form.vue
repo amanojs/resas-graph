@@ -10,35 +10,79 @@
           type="checkbox"
           name="pref"
           v-model="box.checked"
-          :id="`pref${box.code}`"
+          :id="`pref${box.prefCode}`"
         />
-        <label class="prefs" @click="checked(box)">{{ box.name }}</label>
+        <label class="prefs" @click="checked(box)">{{ box.prefName }}</label>
       </li>
     </ul>
+    <button @click="getPopulation">aaa</button>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import { mapActions } from 'vuex'
+
 export default {
   data: () => ({
-    boxes: [
-      { code: 1, name: '北海道', checked: false },
-      { code: 2, name: '青森県', checked: false },
-      { code: 3, name: '岩手県', checked: false },
-      { code: 4, name: '宮城県', checked: false },
-      { code: 5, name: '秋田県', checked: false },
-      { code: 6, name: '山形県', checked: false },
-      { code: 7, name: '福島県', checked: false },
-      { code: 8, name: '茨城県', checked: false },
-      { code: 9, name: '栃木県', checked: false },
-      { code: 10, name: '群馬県', checked: false },
-      { code: 11, name: '埼玉県', checked: false },
-    ],
+    boxes: [],
   }),
+  mounted() {
+    this.getPrefs()
+  },
   methods: {
     checked(box) {
       box.checked = !box.checked
+      this.getPopulation()
     },
+    async getPrefs() {
+      const RESAS_KEY = process.env.VUE_APP_RESAS_KEY
+      const RESAS_END = process.env.VUE_APP_RESAS_END
+      if (!RESAS_KEY || !RESAS_END) {
+        alert('システムに問題が発生しました')
+        console.error('RESASに関する環境変数が読み込めません')
+        return
+      }
+      try {
+        const { data } = await axios.get(RESAS_END + '/api/v1/prefectures', {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': RESAS_KEY,
+          },
+        })
+        if (data.statusCode) {
+          throw new Error(data.statusCode)
+        }
+        const prefs = data.result
+        for (const pref of prefs) {
+          pref.checked = false
+          this.boxes = [...this.boxes, pref]
+        }
+      } catch (error) {
+        const status = Number(error.message)
+        let message = 'RESAS API: '
+        if (status === 400) {
+          message +=
+            '必須パラメータの設定が漏れていないか、正しいフォーマットで設定できているか、等をご確認ください'
+        } else if (status === 403) {
+          message += 'APIキーが無効です'
+        } else if (status === 404) {
+          message +=
+            'APIのアドレスに誤りはないか、バージョンアップで廃止されていないか、ご確認ください'
+        } else if (status === 429) {
+          message += 'アクセス制限数を超えました'
+        }
+        console.error(message)
+        return
+      }
+    },
+    async getPopulation() {
+      const targetPref = this.boxes.filter(pref => {
+        return pref.checked === true
+      })
+      await this.getPopulationFromApi(targetPref)
+    },
+    ...mapActions(['getPopulationFromApi']),
   },
 }
 </script>
@@ -104,12 +148,14 @@ export default {
       display: none;
     }
     .prefs {
-      box-sizing: border-box;
-      cursor: pointer;
       display: inline-block;
+      width: auto;
       padding: 5px 30px;
       position: relative;
-      width: auto;
+      box-sizing: border-box;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .prefs::before {
       background: #fff;

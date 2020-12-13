@@ -1,11 +1,84 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+  state: {
+    population: [],
+  },
+  getters: {
+    population: state => state.population,
+  },
+  mutations: {
+    setPopulation(state, population) {
+      state.population = population
+    },
+  },
+  actions: {
+    async getPopulationFromApi({ state, commit }, prefs) {
+      const RESAS_KEY = process.env.VUE_APP_RESAS_KEY
+      const RESAS_END = process.env.VUE_APP_RESAS_END
+      if (!RESAS_KEY || !RESAS_END) {
+        alert('システムに問題が発生しました')
+        console.error('RESASに関する環境変数が読み込めません')
+        throw new Error()
+      }
+      let prefsPopData = state.population
+
+      // ===APIアクセスを減らすためにフィルタリング処理===
+      if (state.population.length !== 0) {
+        const statePop = state.population
+        // 不足分を算出
+        const notEnough = prefs.filter(item1 => {
+          const notMatch = statePop.filter(
+            item2 => item1.prefCode === item2.prefCode
+          )
+          return notMatch.length === 0
+        })
+        // 過多文を算出
+        const excess = statePop.filter(item1 => {
+          const notMatch = prefs.filter(
+            item2 => item1.prefCode === item2.prefCode
+          )
+          return notMatch.length === 0
+        })
+        prefs = notEnough
+        // 過多文を切り取った配列をセット
+        if (excess.length !== 0) {
+          const concatState = statePop.filter(stateVal => {
+            const notMatch = excess.filter(
+              excessVal => stateVal.prefCode === excessVal.prefCode
+            )
+            return notMatch.length === 0
+          })
+          prefsPopData = concatState
+        }
+      }
+      for await (const pref of prefs) {
+        const params = {
+          prefCode: pref.prefCode,
+        }
+        // あとで関数化
+        const { data } = await axios.get(
+          RESAS_END + '/api/v1/population/composition/perYear',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-KEY': RESAS_KEY,
+            },
+            params,
+          }
+        )
+        const prefPopulation = {
+          prefCode: pref.prefCode,
+          prefName: pref.prefName,
+          population: data.result.data[0].data,
+        }
+        prefsPopData.push(prefPopulation)
+      }
+      commit('setPopulation', prefsPopData)
+    },
+  },
 })
