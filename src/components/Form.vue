@@ -15,11 +15,13 @@
         <label class="prefs" @click="checked(box)">{{ box.prefName }}</label>
       </li>
     </ul>
+    <button @click="getPopulation">aaa</button>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 
 export default {
   data: () => ({
@@ -31,6 +33,7 @@ export default {
   methods: {
     checked(box) {
       box.checked = !box.checked
+      this.getPopulation()
     },
     async getPrefs() {
       const RESAS_KEY = process.env.VUE_APP_RESAS_KEY
@@ -73,6 +76,13 @@ export default {
         return
       }
     },
+    async getPopulation() {
+      const targetPref = this.boxes.filter(pref => {
+        return pref.checked === true
+      })
+      await this.getPopulationFromApi(targetPref)
+    },
+    ...mapActions(['getPopulationFromApi']),
   },
 }
 </script>
