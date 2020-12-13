@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import colors from '../plugins/charts/LineColor'
 
 Vue.use(Vuex)
 
@@ -102,7 +103,7 @@ export default new Vuex.Store({
           datasets.push({
             label: prefData.prefName,
             fill: false,
-            borderColor: '#999',
+            borderColor: colors[prefData.prefCode],
             data: datas,
           })
         }
