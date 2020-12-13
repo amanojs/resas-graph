@@ -7,7 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     population: [],
-    popGraphData: [],
+    popGraphData: null,
   },
   getters: {
     population: state => state.population,
@@ -31,6 +31,13 @@ export default new Vuex.Store({
         throw new Error()
       }
       let prefsPopData = state.population
+
+      console.log(prefs.length)
+      if (prefs.length === 0) {
+        commit('setPopulation', [])
+        commit('setPopGraphData', null)
+        return
+      }
 
       // ===APIアクセスを減らすためにフィルタリング処理===
       if (state.population.length !== 0) {
@@ -110,7 +117,7 @@ export default new Vuex.Store({
         }
         commit('setPopGraphData', graphData)
       } else {
-        commit('setPopGraphData', [])
+        commit('setPopGraphData', null)
       }
     },
   },
