@@ -5,17 +5,16 @@
       <button type="submit">検索</button>
     </form>
     <ul>
-      <li v-for="box in boxes" :key="box.code">
+      <li v-for="box in boxes" @click="checked(box)" :key="box.code">
         <input
           type="checkbox"
           name="pref"
           v-model="box.checked"
           :id="`pref${box.prefCode}`"
         />
-        <label class="prefs" @click="checked(box)">{{ box.prefName }}</label>
+        <label class="prefs">{{ box.prefName }}</label>
       </li>
     </ul>
-    <button @click="getPopulation">aaa</button>
   </div>
 </template>
 
