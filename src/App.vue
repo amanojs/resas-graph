@@ -2,7 +2,12 @@
   <div id="app">
     <Header />
     <Form />
-    <Graph />
+    <div class="graph_wrap" ref="target">
+      <Graph />
+    </div>
+    <div class="go-graph" @click="startScroll" ref="goGraph">
+      グラフを見る
+    </div>
   </div>
 </template>
 
@@ -17,6 +22,30 @@ export default {
     Header,
     Form,
     Graph,
+  },
+  data: () => ({
+    goFlag: true,
+  }),
+  mounted() {
+    window.onscroll = () => {
+      if (
+        this.$refs.target.offsetTop <
+        window.scrollY + this.$refs.target.clientHeight
+      ) {
+        this.$refs.goGraph.style.opacity = '0'
+        this.$refs.goGraph.setAttribute('disabled', true)
+      } else {
+        this.$refs.goGraph.style.opacity = '100'
+      }
+    }
+  },
+  methods: {
+    startScroll() {
+      window.scrollTo({
+        top: this.$refs.target.offsetTop - 30,
+        behavior: 'smooth',
+      })
+    },
   },
 }
 </script>
@@ -37,10 +66,17 @@ export default {
   display: none;
   position: fixed;
   bottom: 10px;
-  right: 10px;
-  padding: 5px;
+  right: 5px;
+  padding: 5px 10px;
+  color: #fff;
+  font-size: 13px;
+  border: 0px;
+  background-color: #16a085;
   border-radius: 50px;
+  box-shadow: 0 0 4px #999;
   cursor: pointer;
+  outline: none;
+  transition: 0.2s;
 }
 
 @media screen and (max-width: 640px) {
@@ -50,5 +86,9 @@ export default {
   .go-graph {
     display: inline-block;
   }
+}
+
+.off {
+  visibility: ;
 }
 </style>
