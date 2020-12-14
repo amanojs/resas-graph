@@ -33,4 +33,22 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+.go-graph {
+  display: none;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 640px) {
+  #app {
+    padding-bottom: 30px;
+  }
+  .go-graph {
+    display: inline-block;
+  }
+}
 </style>
