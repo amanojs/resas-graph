@@ -1,13 +1,13 @@
 <template>
   <div class="Graph_wrap">
-    <div class="ticks" v-if="popGraphData">人口(千)</div>
+    <div class="ticks" v-if="popGraphData.labels.length">人口(千)</div>
     <div class="Graph">
       <LineChart
         :chart-data="popGraphData"
         :options="graphOptions"
-        v-show="popGraphData"
+        v-show="popGraphData.labels.length"
       />
-      <div class="no-select" v-show="!popGraphData">
+      <div class="no-select" v-show="!popGraphData.labels.length">
         都道府県を選択してください
       </div>
     </div>
@@ -34,7 +34,6 @@ export default {
           context.options.legend.position = 'right'
           context.options.legend.align = 'start'
         }
-        console.log(context.options.scales.yAxes)
       },
       legend: {
         align: window.screen.width < 550 ? 'center' : 'start',

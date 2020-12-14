@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     population: [],
-    popGraphData: null,
+    popGraphData: { labels: [], datasets: [] },
   },
   getters: {
     population: state => state.population,
@@ -32,11 +32,9 @@ export default new Vuex.Store({
         throw new Error()
       }
       let prefsPopData = state.population
-
-      console.log(prefs.length)
       if (prefs.length === 0) {
         commit('setPopulation', [])
-        commit('setPopGraphData', null)
+        commit('setPopGraphData', { labels: [], datasets: [] })
         return
       }
 
@@ -118,7 +116,7 @@ export default new Vuex.Store({
         }
         commit('setPopGraphData', graphData)
       } else {
-        commit('setPopGraphData', null)
+        commit('setPopGraphData', { labels: [], datasets: [] })
       }
     },
   },

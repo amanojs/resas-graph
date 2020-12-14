@@ -6,6 +6,10 @@ export default {
   mixins: [reactiveProp],
   props: ['options'],
   mounted() {
-    this.render(this.chartData, this.options)
+    try {
+      this.render(this.chartData, this.options)
+    } catch (error) {
+      console.log('first graph rendering.')
+    }
   },
 }
