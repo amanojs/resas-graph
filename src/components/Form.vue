@@ -139,9 +139,12 @@ export default {
     min-width: 120px;
     height: 35px;
     margin: 5px 2%;
+    font-size: 14.5px;
+    color: #555;
     cursor: pointer;
     background-color: #fff;
     box-shadow: 0 0 8px #eee;
+    transition: 0.5s;
 
     input[type='checkbox'] {
       display: none;
@@ -190,6 +193,11 @@ export default {
       opacity: 1;
     }
   }
+
+  li:hover {
+    background-color: #eee;
+    box-shadow: 0 4px 16px #eee;
+  }
 }
 
 @media screen and (max-width: 640px) {
@@ -204,6 +212,10 @@ export default {
       width: 20%;
       height: 40px;
     }
+  }
+
+  .go-graph {
+    display: inline-block;
   }
 }
 
