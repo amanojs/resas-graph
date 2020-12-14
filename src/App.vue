@@ -8,6 +8,7 @@
     <div class="go-graph" @click="startScroll" ref="goGraph">
       グラフを見る
     </div>
+    <Footer />
   </div>
 </template>
 
@@ -15,6 +16,7 @@
 import Header from '@/components/Header'
 import Form from '@/components/Form'
 import Graph from '@/components/Graph'
+import Footer from '@/components/Footer'
 
 export default {
   name: 'App',
@@ -22,6 +24,7 @@ export default {
     Header,
     Form,
     Graph,
+    Footer,
   },
   data: () => ({
     goFlag: true,
@@ -80,9 +83,6 @@ export default {
 }
 
 @media screen and (max-width: 640px) {
-  #app {
-    padding-bottom: 30px;
-  }
   .go-graph {
     display: inline-block;
   }

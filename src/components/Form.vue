@@ -1,9 +1,6 @@
 <template>
   <div class="Form">
-    <form class="search_box">
-      <input type="text" class="pref_search" placeholder="都道府県名を入力" />
-      <button type="submit">検索</button>
-    </form>
+    <h2>都道府県一覧</h2>
     <ul>
       <li v-for="box in boxes" @click="checked(box)" :key="box.code">
         <input
@@ -90,6 +87,11 @@ export default {
 .Form {
   margin: 0 auto;
   width: 100%;
+
+  h2 {
+    margin: 10px;
+    font-size: 20px;
+  }
 }
 .search_box {
   width: 100%;
